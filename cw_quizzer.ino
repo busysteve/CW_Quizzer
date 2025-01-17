@@ -1638,7 +1638,7 @@ void setup() {
   lcds.clear();
 #endif
 
-  print_line(0, "CW Processor");
+  print_line(0, "CW Quizzer");
   print_line(1, "Version");
   print_line(2, VERSION);
 
