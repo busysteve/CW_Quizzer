@@ -1,3 +1,14 @@
+// ============================================================
+// cw_quizzer.ino :: An Iambic Keyer and Decoder (4x20 LCD)
+//
+// 
+// Modified and Updated by Stephen Mathews K4SDM
+// Originally by Scott Baker KJ7NLA
+// ============================================================
+
+
+#define VERSION   "1.0.2"
+const byte ver = 01;
 
 
 #define CW_LCD 1
@@ -175,13 +186,6 @@ LCD_Sim lcds;
 #define MAXCOL    COLSIZE-1  // max display column
 #define MAXLINE   ROWSIZE-1  // max display row
 
-// ============================================================
-// decoder.ino :: An Iambic Keyer and Decoder (4x20 LCD)
-//
-// (c) Scott Baker KJ7NLA
-// Modified and Updated by Stephen Mathews K4SDM
-// ============================================================
-
 const uint8_t pinDit  = CW_DIT_PIN;  // dit key input
 const uint8_t pinDah  = CW_DAH_PIN;  // dah key input
 const uint8_t pinSw1  = CW_SW1_PIN;  // push-button switch
@@ -190,8 +194,6 @@ const uint8_t pinOuterBuzz = CW_BUZZ_PIN_OUTER;  // buzzer/speaker pin
 uint8_t pinBuzz = pinInnerBuzz;  // buzzer/speaker pin
 //const uint8_t pinBuzz = 8;  // buzzer/speaker pin
 
-#define VERSION   "0.1.10"
-const byte ver = 01;
 //#define DEBUG 1           // uncomment for debug
 
 // Morse-to-ASCII lookup table
@@ -1573,18 +1575,32 @@ test_again:
         quiz[i] = (random() % 4) == 0 && quiz[i-1] != ' ' && lesson_size > 6 ? ' ' : lesson_seq[ ( random() % (window) ) ];
     }
     quiz[len] = 0;
+
+repeat:
     send_cwmsg(quiz, 1);
 
     // loop until button is pressed
     while (!sw1Pushed) {
 
+      // repeat it
       if( !digitalRead(pinDit) && !digitalRead(pinDah) )
       {
         delay(70);
         if( !digitalRead(pinDit) && !digitalRead(pinDah) )
-          goto test_again;
+        {
+          myrow = 0;
+          mycol = 0;
+          lcds.clear();
+          sprintf( str, "QUIZ - %d WPM", keyerwpm );
+          print_line(0, str);
+
+          delay(1000);
+          lcds.clear();
+          goto repeat;
+        }
       }
-      
+
+      // Got it right?    
       if( digitalRead(pinDit) && !digitalRead(pinDah) )
       {
         delay(70);
@@ -1596,6 +1612,7 @@ test_again:
         }
       }
       
+      // Got it wrong?
       if( !digitalRead(pinDit) && digitalRead(pinDah) )
       {
         delay(70);
