@@ -6,6 +6,7 @@
 // Originally by Scott Baker KJ7NLA
 // ============================================================
 
+#include <Arduino.h>
 
 #define VERSION   "1.0.2"
 const byte ver = 01;
@@ -14,7 +15,6 @@ const byte ver = 01;
 #define CW_LCD 1
 #define CW_OLED 0
 
-#include <Arduino.h>
 
 
 #define SPACE10   "          "
@@ -1805,20 +1805,3 @@ void loop() {
   iambic_keyer();
 }
 
-/*
-void setup(void) {
-  // flip screen, if required
-  // u8g.setRot180();
-}
-
-void loop(void) {
-  // picture loop
-  u8g.firstPage();  
-  do {
-    draw();
-  } while( u8g.nextPage() );
-  
-  // rebuild the picture after some delay
-  delay(500);
-}
-*/
