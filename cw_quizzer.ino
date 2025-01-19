@@ -190,7 +190,7 @@ const uint8_t pinOuterBuzz = CW_BUZZ_PIN_OUTER;  // buzzer/speaker pin
 uint8_t pinBuzz = pinInnerBuzz;  // buzzer/speaker pin
 //const uint8_t pinBuzz = 8;  // buzzer/speaker pin
 
-#define VERSION   "0.1.9"
+#define VERSION   "0.1.10"
 const byte ver = 01;
 //#define DEBUG 1           // uncomment for debug
 
@@ -1518,6 +1518,7 @@ void menu_mode() {
 
 // send a message
 void menu_msg() {
+  char prev_wpm = keyerwpm;
 test_again:
   if( lesson_mode )
   {
@@ -1532,7 +1533,9 @@ test_again:
     }
 
     //lcds.clear();
-    print_line(0, "QUIZ MODE");
+    char str[20];
+    sprintf( str, "QUIZ - %d WPM", keyerwpm );
+    print_line(0, str);
 
     delay(2200);
 
@@ -1576,11 +1579,41 @@ test_again:
     while (!sw1Pushed) {
 
       if( !digitalRead(pinDit) && !digitalRead(pinDah) )
-        goto test_again;
-
+      {
+        delay(70);
+        if( !digitalRead(pinDit) && !digitalRead(pinDah) )
+          goto test_again;
+      }
+      
+      if( digitalRead(pinDit) && !digitalRead(pinDah) )
+      {
+        delay(70);
+        if( digitalRead(pinDit) && !digitalRead(pinDah) )
+        {
+          keyerwpm++;
+          ditcalc();
+          goto test_again;
+        }
+      }
+      
+      if( !digitalRead(pinDit) && digitalRead(pinDah) )
+      {
+        delay(70);
+        if( !digitalRead(pinDit) && digitalRead(pinDah) )
+        {
+          keyerwpm--;
+          ditcalc();
+          goto test_again;
+        }
+      }
+      
       read_switch();
       delay(1);
     }
+
+    keyerwpm = prev_wpm;
+    ditcalc();
+
     back2run();
   }
   else
