@@ -753,7 +753,7 @@ void ditcalc() {
 
   dittime    = DITCONST/keyerwpm;
   dahtime    = (DITCONST * 3)/keyerwpm;
-  lettergap1 = (DITCONST * 2.5)/(keyerwpm);
+  lettergap1 = (DITCONST * 3)/(keyerwpm);
   lettergap2   = (DITCONST * 3)/(farn);
   wordgap1   = (DITCONST * 5)/(keyerwpm);
   wordgap2   = (DITCONST * 7)/(farn);
@@ -1804,4 +1804,3 @@ void loop() {
   // no buttons pressed
   iambic_keyer();
 }
-
